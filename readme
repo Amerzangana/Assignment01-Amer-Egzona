@@ -1,3 +1,3 @@
-npx init playwright@latest
-npx install dotenv
+npx init playwright
+npm install dotenv
 npm install --save-dev @faker-js/faker
