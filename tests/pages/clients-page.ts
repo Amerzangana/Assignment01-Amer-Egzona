@@ -23,24 +23,21 @@ export class ClientsPage {
     this.clientPhoneTextfield = page.locator('input[type="text"]');
     this.clientSaveButton = page.getByRole('button', { name: 'Save' });    
     this.clientBackButton = page.getByRole('button', { name: 'Back' });    
-
-  
 }
 
   // Methods / functions
 
-  async CreateRoom(name: string, email:string, phoneNo:string) {
+  async CreateClients(fullName: string, email:string, phoneNo:string) {
     //fill out the room form and select Save button.
     await this.clientViewButton.click();
-    await this.clientNameTextfield.fill(name);
+    await this.clientNameTextfield.fill(fullName);
     await this.clientEmailTextfield.fill(email);
     await this.clientPhoneTextfield.fill(phoneNo);
-
     await this.clientSaveButton.click();    
   }
 
-  async filloutClientInformationManually(name: string, email:string, phoneNo:string){
-      await this.clientNameTextfield.fill(name);
+  async filloutClientInformationManually(fullName: string, email:string, phoneNo:string){
+    await this.clientNameTextfield.fill(fullName);
     await this.clientEmailTextfield.fill(email);
     await this.clientPhoneTextfield.fill(phoneNo);
 
