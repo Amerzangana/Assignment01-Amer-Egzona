@@ -59,3 +59,39 @@ await expect(page.getByText('New Client')).toBeVisible();
 // implicit wait
 await page.waitForTimeout(2000);
 });
+
+
+test('Create Bills Paid', async ({ page }) => {
+
+  const price = faker.commerce.price({ min: 999, max: 5000, dec: 0 });
+   
+  await page.locator('#app > div > div > div:nth-child(3) > a').click();
+  await expect(page.getByRole('heading', { name: 'Bills' })).toBeVisible();
+  await page.getByRole('link', { name: 'Create Bill' }).click();
+  await page.getByRole('spinbutton').fill(price);
+  await page.locator('.checkbox').click();
+  await page.getByText('Save').click();
+  await page.waitForTimeout(1000);
+
+  const element = page.locator('#app > div > div.bills > div:nth-last-child(1)');
+  await expect(element).toContainText(price);
+  await expect(element).toContainText("Yes");
+});
+
+test('Create Bills Not Paid', async ({ page }) => {
+
+  const price = faker.commerce.price({ min: 999, max: 5000, dec: 0 });
+   
+  await page.locator('#app > div > div > div:nth-child(3) > a').click();
+  await expect(page.getByRole('heading', { name: 'Bills' })).toBeVisible();
+  await page.getByRole('link', { name: 'Create Bill' }).click();
+  await page.getByRole('spinbutton').fill(price);
+  await page.getByText('Save').click();
+  await page.waitForTimeout(1000);
+
+  const element = page.locator('#app > div > div.bills > div:nth-last-child(1)');
+  await expect(element).toContainText(price);
+  await expect(element).toContainText("No");
+
+});
+
