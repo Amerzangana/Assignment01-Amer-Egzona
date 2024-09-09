@@ -9,7 +9,7 @@ export class ClientsPage {
   readonly createClientButton: Locator; 
   readonly clientNameTextfield: Locator;
   readonly clientEmailTextfield: Locator;
-  readonly clientPhoneTextfiield: Locator;
+  readonly clientPhoneTextfield: Locator;
   readonly clientSaveButton: Locator;
   readonly clientBackButton: Locator;
 
@@ -20,7 +20,7 @@ export class ClientsPage {
     this.createClientButton = page.getByRole('button', { name: 'Create Bill' }); 
     this.clientNameTextfield = page.locator('input[type="text"]');
     this.clientEmailTextfield = page.locator('input[type="text"]');
-    this.clientPhoneTextfiield = page.locator('input[type="text"]');
+    this.clientPhoneTextfield = page.locator('input[type="text"]');
     this.clientSaveButton = page.getByRole('button', { name: 'Save' });    
     this.clientBackButton = page.getByRole('button', { name: 'Back' });    
 
@@ -29,34 +29,21 @@ export class ClientsPage {
 
   // Methods / functions
 
-  async CreateRoom(username: string, password:string) {
+  async CreateRoom(name: string, email:string, phoneNo:string) {
     //fill out the room form and select Save button.
     await this.clientViewButton.click();
-    await this.clientNameTextfield.fill(email);
+    await this.clientNameTextfield.fill(name);
     await this.clientEmailTextfield.fill(email);
-    await this.clientPhoneTextfiield.fill(email);
+    await this.clientPhoneTextfield.fill(phoneNo);
 
     await this.clientSaveButton.click();    
   }
 
   async filloutClientInformationManually(name: string, email:string, phoneNo:string){
+      await this.clientNameTextfield.fill(name);
     await this.clientEmailTextfield.fill(email);
+    await this.clientPhoneTextfield.fill(phoneNo);
 
   }
 
-  async filloutClientInformationRandomly(){
-    const randomEmail = faker.internet.email();
-    await this.clientEmailTextfield.fill(randomEmail);
-
   }
-  async filloutClientInformationRandomly(){
-    const randomEmail = faker.internet.email();
-    await this.clientEmailTextfield.fill(randomEmail);
-
-  }
-  async filloutClientInformationRandomly(){
-    const randomEmail = faker.internet.email();
-    await this.clientEmailTextfield.fill(randomEmail);
-
-  }
-}
