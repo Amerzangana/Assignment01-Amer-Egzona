@@ -28,10 +28,6 @@ export class RoomsPage {
     this.roomSaveButton = page.locator('#app > div > div.actions > a.btn.blue');
   }
 
-  // Methods / functions
-  async goto() {
-    await this.page.goto(`${process.env.BASE_URL}`);
-  }
 
   async createRoom(roomNumber: string, roomFloor: string, roomPrice: string) {
     // Navigate to the room creation view and fill out the form
