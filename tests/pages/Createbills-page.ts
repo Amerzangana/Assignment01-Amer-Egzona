@@ -1,7 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 
-
 export class BillsPage {
   //Attributes
   readonly page: Page;
@@ -16,22 +15,22 @@ export class BillsPage {
   constructor(page: Page) {
     this.page = page;
     this.billsViewButton = page.locator('#app > div > div > div:nth-child(3) > a');
-    this.createBillsButton = page.getByRole('button', { name: 'Create Bill' }); 
-    this.billsValueTextfield = page.locator('input[type="text"]');
+    this.createBillsButton = page.getByRole('link', { name: 'Create Bill' }); 
+    this.billsValueTextfield = page.getByRole('spinbutton');
     this.billsPaidCheckbox = page.locator('.checkbox');
-    this.billsSaveButton = page.getByRole('button', { name: 'Save' });    
-    this.billsBackButton = page.getByRole('button', { name: 'Back' });  
+    this.billsSaveButton = page.getByText('Save');    
+    this.billsBackButton = page.getByRole('link', { name: 'Back' })  
   }
 
   async CreateBills(price: string) {
+    faker.commerce.price({ min: 999, max: 5000, dec: 0 });
     //fill out the room form and select Save button.
     await this.billsViewButton.click();
+    await this.createBillsButton.click();
     await this.billsValueTextfield.fill(price);
     await this.billsPaidCheckbox.click();
     await this.billsSaveButton.click();    
     await this.billsBackButton.click();    
-
-    faker.commerce.price({ min: 999, max: 5000, dec: 0 });
 
   }
 
@@ -39,5 +38,5 @@ export class BillsPage {
 
   async filloutbillsInformationManually(price: string){
     await this.billsValueTextfield.fill(price);
-
+  }
 }

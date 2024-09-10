@@ -48,7 +48,7 @@ export class RoomsPage {
     // Generate random data using faker
     const roomNumber = faker.number.float({ min: 20, max: 30 }).toFixed(0);
     const roomFloor = faker.number.int({ min: 1, max: 10 }).toString();
-    const roomPrice = faker.commerce.price();
+    const roomPrice = faker.commerce.price({ min: 999, max: 50000});
 
     // Fill out the room information with the generated data
     await this.roomNumberTextfield.fill(roomNumber);
