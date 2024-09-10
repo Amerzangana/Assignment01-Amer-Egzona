@@ -2,23 +2,24 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from './pages/login-page';
 import { DashboardPage } from './pages/dashboard-page';
 import { faker } from '@faker-js/faker';
-
-
+import { BillsPage } from './pages/bills-page';
+import { CreateClientsPage } from './pages/createclients-page';
+import { ClientsView } from './pages/clientsview-page';
+import { ClientsEdit } from './pages/clientsedit-page';
 
 test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
-  const dashboardPage = new DashboardPage(page);
 
   await loginPage.goto();
   await loginPage.performLogin(`${process.env.TEST_USERNAME}`,`${process.env.TEST_PASSWORD}`)
   await expect(page.getByRole('heading', { name: 'Tester Hotel Overview' })).toBeVisible();
-  await page.waitForTimeout(3000);   
+  await page.waitForTimeout(5000);   
 });
 
 test.describe('Test suite 01', () => {
   test('Login', async ({ page }) => {
 
-    await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible();  
+    await expect(page.getByRole('heading', { name: 'Tester Hotel Overview' })).toBeVisible();
   });
 });
 
@@ -31,33 +32,24 @@ test('Logout', async ({ page }) => {
   
 });
 
-test('Create Clients', async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
+test('Clients Dashboard Alt', async ({ page }) => {
+  const clientsView = new ClientsView(page);
+  const createclientsPage = new CreateClientsPage(page);
+  const clientsEdit = new ClientsEdit(page);
 
-// navigate to clients view
-await page.locator('#app > div > div > div:nth-child(2) > a').click();
-await page.getByRole('link', { name: 'Create Client' }).click();
+  await clientsView.ClientsView();
+  await clientsView.verifyfirstelement();
 
-await expect(page.getByText('New Client')).toBeVisible();
+  const fullName = faker.person.fullName();
+  const userEmail = faker.internet.email();
+  const userPhoneNo = faker.phone.number();
 
-// create new client.
- const fullName = faker.person.fullName();      
- const userEmail = faker.internet.email();     
- const userPhoneNo = faker.phone.number(); 
-
- await page.locator('div').filter({ hasText: /^Name$/ }).getByRole('textbox').fill(fullName);
- await page.locator('input[type="email"]').fill(userEmail);
- await page.locator('div').filter({ hasText: /^Telephone$/ }).getByRole('textbox').fill(userPhoneNo);
- await page.getByText('Save').click();
-
- const element = page.locator('#app > div > div.clients > div:nth-last-child(1)');
- await expect(element).toContainText(fullName);
- await expect(element).toContainText(userEmail);
- await expect(element).toContainText(userPhoneNo);
-    
-
-// implicit wait
-await page.waitForTimeout(2000);
+  await createclientsPage.CreateClients(fullName, userEmail, userPhoneNo);
+  await clientsView.verifylastelement(fullName, userEmail, userPhoneNo);
+  await clientsEdit.EditClients();
+  await clientsEdit.DeliteClients();
+  await createclientsPage.filloutClientInformationManually();
+  await createclientsPage.veryifrylastclient();
 });
 
 test('Create Bills Paid', async ({ page }) => {
@@ -65,13 +57,8 @@ test('Create Bills Paid', async ({ page }) => {
 
   const price = faker.commerce.price({ min: 999, max: 5000, dec: 0 });
 
-  await page.locator('#app > div > div > div:nth-child(3) > a').click();
-  await expect(page.getByRole('heading', { name: 'Bills' })).toBeVisible();
-  await page.getByRole('link', { name: 'Create Bill' }).click();
-  await page.getByRole('spinbutton').fill(price);
-  await page.locator('.checkbox').click();
-  await page.getByText('Save').click();
-  await page.waitForTimeout(1000);
+  await billsPage.CreateBills(price);
+
 
   const element = page.locator('#app > div > div.bills > div:nth-last-child(1)');
   await expect(element).toContainText(price);
@@ -79,6 +66,7 @@ test('Create Bills Paid', async ({ page }) => {
 });
 
 test('Create Bills Not Paid', async ({ page }) => {
+  const billsPage = new BillsPage(page);
 
   const price = faker.commerce.price({ min: 999, max: 5000, dec: 0 });
 
@@ -126,12 +114,9 @@ const roomPrice = faker.finance.accountNumber();
     await expect(element).toContainText(roomNumber);
     await expect(element).toContainText(roomFloor);
     await expect(element).toContainText(roomPrice);
-    const featureElement = page.locator('#app > div > div.rooms > div:nth-last-child(1) > div:nth-child(2) > div.features > div');
-    await expect(element).toContainText("Sea View");
+    const featureElement = page.locator('#app > div > div.rooms > div:nth-last-child(1) > div:nth-last-child(1) > div.features > div');
+    await expect(featureElement.nth(3)).toHaveText('sea view');
 
 
   
 });
-
-
-
