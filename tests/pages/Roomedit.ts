@@ -17,7 +17,6 @@ export class RoomEdit {
   readonly roomBackButton: Locator;
   readonly lastelement: Locator;
   
-
   constructor(page: Page) {
     this.page = page;
     this.createRoomButton = page.getByRole('link', { name: 'Create Room' });
@@ -33,13 +32,8 @@ export class RoomEdit {
     this.roomBackButton = page.locator('#app > div > div:nth-child(3) > a')
     this.lastelement = page.locator('#app > div > div.rooms > div:nth-last-child(1)');
   }
-    
-    
-    
-
 
   async EditRoom() {
-
     await this.roomAltButton.click();
     await this.rooomEditButton.click();
     await this.roomNumberTextfield.fill("1");
@@ -49,20 +43,13 @@ export class RoomEdit {
     await this.roomFeaturesButton.click();
     await this.roomSaveButton.click();
 
-    
-
-
-    
   }
   async DeleteRoom() {
-
     await this.roomAltButton.click();
     await this.roomDeleteButton.click();
 
-
 }
   async filloutroomInformationManually() {
-    
       await this.createRoomButton.click();
       await this.roomNumberTextfield.fill("1");
       await this.roomFloorTextfield.fill("6");
@@ -71,10 +58,8 @@ export class RoomEdit {
       await this.roomFeaturesButton.click();
       await this.roomSaveButton.click();
 
-
 }
 async veryifrylastroom() {
-
   await expect(this.lastelement).toContainText("1");
   await expect(this.lastelement).toContainText("6");
   await expect(this.lastelement).toContainText("3545");

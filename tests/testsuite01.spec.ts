@@ -22,18 +22,17 @@ test.beforeEach(async ({ page }) => {
   await page.waitForTimeout(5000);   
 });
 
+test.afterEach(async ({ page }) => {
+  const dashboardPage = new DashboardPage(page);
+  await dashboardPage.performLogout();
+  await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible();
+});
+
 test.describe('Login', () => {
   test('Login', async ({ page }) => {
 
     await expect(page.getByRole('heading', { name: 'Tester Hotel Overview' })).toBeVisible();
   });
-});
-
-test('Logout', async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
-
-  await dashboardPage.performLogout();
-  await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible(); 
 });
 
 test('Clients Dashboard Alt', async ({ page }) => {

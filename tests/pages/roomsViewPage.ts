@@ -7,7 +7,6 @@ export class RoomsViewPage {
     readonly roomViewButton: Locator;
     readonly lastelement: Locator;
 
-
 constructor(page: Page) {
     this.page = page;
     this.roomViewButton = page.locator('#app > div > div > div:nth-child(1) > a');
@@ -17,14 +16,9 @@ constructor(page: Page) {
 async RoomsView() {
        
     await this.roomViewButton.click();
-
-
-
-
 }
 
 async verifylastelement(roomNumber: string, roomFloor: string, roomPrice: string){
-    
 
     await expect(this.lastelement).toContainText(roomNumber);
     await expect(this.lastelement).toContainText(roomFloor);
