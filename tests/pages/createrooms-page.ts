@@ -1,7 +1,9 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 
-export class RoomsPage {
+
+
+export class CreateRoomsPage {
   //Attributes
   readonly page: Page;
   readonly roomViewButton: Locator;
@@ -29,13 +31,10 @@ export class RoomsPage {
   }
 
 
-  async createRoom(roomNumber: string, roomFloor: string, roomPrice: string) {
+  async CreateRoom(roomNumber: string, roomFloor: string, roomPrice: string) {
     // Navigate to the room creation view and fill out the form
-    await this.roomViewButton.click();
     await this.createRoomButton.click();
-    await this.roomCategoryButton.selectOption({ index: 0 }); 
     await this.roomCategoryButton.selectOption({ index: 1 });
-    await this.roomCategoryButton.selectOption({ index: 2 });
     await this.roomNumberTextfield.fill(roomNumber);
     await this.roomFloorTextfield.fill(roomFloor);
     await this.roomAvailableButton.click();
@@ -44,11 +43,11 @@ export class RoomsPage {
     await this.roomSaveButton.click();
   }
 
-  async filloutRoomInformationrandom() {
+  async filloutRoomInformationForm() {
     // Generate random data using faker
     const roomNumber = faker.number.float({ min: 20, max: 30 }).toFixed(0);
     const roomFloor = faker.number.int({ min: 1, max: 10 }).toString();
-    const roomPrice = faker.commerce.price({ min: 999, max: 50000});
+    const roomPrice = faker.commerce.price({ min: 999, max: 5000, dec: 0 });
 
     // Fill out the room information with the generated data
     await this.roomNumberTextfield.fill(roomNumber);
@@ -56,7 +55,3 @@ export class RoomsPage {
     await this.roomPriceTextfield.fill(roomPrice);
   }
 }
-
-
-
-
