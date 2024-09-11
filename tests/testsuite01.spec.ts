@@ -2,10 +2,15 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from './pages/login-page';
 import { DashboardPage } from './pages/dashboard-page';
 import { faker } from '@faker-js/faker';
-import { BillsPage } from './pages/bills-page';
+import { RoomsViewPage } from './pages/roomsViewPage';
+import { CreateRoomsPage } from './pages/createrooms-page';
+import { RoomEdit } from './pages/Roomedit';
+import { BillsPage } from './pages/Createbills-page';
 import { CreateClientsPage } from './pages/createclients-page';
 import { ClientsView } from './pages/clientsview-page';
 import { ClientsEdit } from './pages/clientsedit-page';
+
+
 
 test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
@@ -83,40 +88,29 @@ test('Create Bills Not Paid', async ({ page }) => {
 
 });
 
-test('Create Room', async ({ page }) => {
-  const dashboardPage = new DashboardPage(page);
+test('Room Dashboard alt ', async ({ page }) => {
+  const roomsViewPage = new RoomsViewPage(page); 
+  const createRoomsPage = new CreateRoomsPage(page);
+  const roomEdit = new RoomEdit(page);
 
-// navigate to Room view
-    await page.locator('#app > div > div > div:nth-child(1) > a').click();
-    await page.getByRole('link', { name: 'Create Room' }).click();
-    await expect(page.getByText('New Room')).toBeVisible();
+  await roomsViewPage.RoomsView(); 
+  await expect(page.getByRole('heading', { name: 'Rooms' })).toBeVisible();
 
+  const roomNumber = faker.number.float({ min: 20, max: 30 }).toFixed(0);
+  const roomFloor = faker.number.int({ min: 1, max: 10 }).toString();
+  const roomPrice = faker.commerce.price({ min: 999, max: 5000, dec: 0 });
 
-// create new Room
+  await createRoomsPage.CreateRoom(roomNumber, roomFloor, roomPrice);
+  await roomsViewPage.verifylastelement(roomNumber, roomFloor, roomPrice);
 
-const roomNumber = faker.number.float({ min: 103, max: 299 }).toFixed(0);
-const roomFloor = faker.number.int({ min: 1, max: 10 }).toString();
-const roomPrice = faker.finance.accountNumber();
+  await roomEdit.EditRoom();
+  await roomEdit.DeleteRoom();
+  await roomEdit.filloutroomInformationManually();
+  await roomEdit.veryifrylastroom();
 
-
-  await page.getByRole('combobox').click();
-  await page.locator('div').filter({ hasText: /^Number$/ }).getByRole('spinbutton').fill(roomNumber)
-  await page.locator('div').filter({ hasText: /^Floor$/ }).getByRole('spinbutton').fill(roomFloor)
-  await page.locator('.checkbox').click();
-  await page.locator('div').filter({ hasText: /^Price$/ }).getByRole('spinbutton').fill(roomPrice)
-  await page.locator('#app > div > div:nth-child(2) > div:nth-child(6) > select > option:nth-child(3)').click();
-  await page.getByText('Save').click();
-
-    // implicit wait
-    await page.waitForTimeout(2000);
-
-    const element = page.locator('#app > div > div.rooms > div:nth-last-child(1)');
-    await expect(element).toContainText(roomNumber);
-    await expect(element).toContainText(roomFloor);
-    await expect(element).toContainText(roomPrice);
-    const featureElement = page.locator('#app > div > div.rooms > div:nth-last-child(1) > div:nth-last-child(1) > div.features > div');
-    await expect(featureElement.nth(3)).toHaveText('sea view');
+});
 
 
   
-});
+
+
