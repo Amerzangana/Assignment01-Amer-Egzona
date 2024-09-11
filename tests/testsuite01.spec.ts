@@ -2,14 +2,15 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from './pages/login-page';
 import { DashboardPage } from './pages/dashboard-page';
 import { faker } from '@faker-js/faker';
-import { RoomsViewPage } from './pages/roomsViewPage';
-import { CreateRoomsPage } from './pages/createrooms-page';
-import { RoomEdit } from './pages/Roomedit';
 import { BillsPage } from './pages/Createbills-page';
 import { CreateClientsPage } from './pages/createclients-page';
 import { ClientsView } from './pages/clientsview-page';
 import { ClientsEdit } from './pages/clientsedit-page';
-
+import { BillsEdit } from './pages/billsEdit-page';
+import { BillsView } from './pages/billsView-page';
+import { RoomsViewPage } from './pages/roomsViewPage';
+import { CreateRoomsPage } from './pages/createrooms-page';
+import { RoomEdit } from './pages/Roomedit';
 
 
 test.beforeEach(async ({ page }) => {
@@ -21,7 +22,7 @@ test.beforeEach(async ({ page }) => {
   await page.waitForTimeout(5000);   
 });
 
-test.describe('Test suite 01', () => {
+test.describe('Login', () => {
   test('Login', async ({ page }) => {
 
     await expect(page.getByRole('heading', { name: 'Tester Hotel Overview' })).toBeVisible();
@@ -33,8 +34,6 @@ test('Logout', async ({ page }) => {
 
   await dashboardPage.performLogout();
   await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible(); 
-
-  
 });
 
 test('Clients Dashboard Alt', async ({ page }) => {
@@ -57,38 +56,29 @@ test('Clients Dashboard Alt', async ({ page }) => {
   await createclientsPage.veryifrylastclient();
 });
 
-test('Create Bills Paid', async ({ page }) => {
+test('Bill Dashboard Alt', async ({ page }) => {
   const billsPage = new BillsPage(page);
+  const billsEdit = new BillsEdit(page);
+  const billView = new BillsView(page);
+
+  await billView.ViewBills();
+  await billView.verifyfirstelement();
 
   const price = faker.commerce.price({ min: 999, max: 5000, dec: 0 });
-
   await billsPage.CreateBills(price);
-
-
-  const element = page.locator('#app > div > div.bills > div:nth-last-child(1)');
-  await expect(element).toContainText(price);
-  await expect(element).toContainText("Yes");
-});
-
-test('Create Bills Not Paid', async ({ page }) => {
-  const billsPage = new BillsPage(page);
-
-  const price = faker.commerce.price({ min: 999, max: 5000, dec: 0 });
-
-  await page.locator('#app > div > div > div:nth-child(3) > a').click();
-  await expect(page.getByRole('heading', { name: 'Bills' })).toBeVisible();
-  await page.getByRole('link', { name: 'Create Bill' }).click();
-  await page.getByRole('spinbutton').fill(price);
-  await page.getByText('Save').click();
+  await billView.verifylastelement(price);
   await page.waitForTimeout(1000);
 
-  const element = page.locator('#app > div > div.bills > div:nth-last-child(1)');
-  await expect(element).toContainText(price);
-  await expect(element).toContainText("No");
-
+  await billsPage.CreateBills(price);
+  await billView.verifylastelement(price);
+  await billsEdit.EditBills();
+  await billsEdit.DeleteBills();
+  await billsPage.CreateBillsNotPaid(price);
+  await billsPage.verifylastelementNotpaid(price);
+  await page.waitForTimeout(1000);
 });
 
-test('Room Dashboard alt ', async ({ page }) => {
+test('Room dasbord alt ', async ({ page }) => {
   const roomsViewPage = new RoomsViewPage(page); 
   const createRoomsPage = new CreateRoomsPage(page);
   const roomEdit = new RoomEdit(page);
@@ -107,10 +97,4 @@ test('Room Dashboard alt ', async ({ page }) => {
   await roomEdit.DeleteRoom();
   await roomEdit.filloutroomInformationManually();
   await roomEdit.veryifrylastroom();
-
 });
-
-
-  
-
-

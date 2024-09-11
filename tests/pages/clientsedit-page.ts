@@ -15,6 +15,7 @@ readonly clientSaveButton: Locator;
 readonly clientBackButton: Locator;
 
 constructor(page: Page) {
+    
     this.page = page;
     this.clientAltButton2 = page.locator('div:nth-child(2) > .action');
     this.clientAltButton1 = page.locator('div:nth-child(1) > .action');
