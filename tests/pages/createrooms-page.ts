@@ -30,7 +30,6 @@ export class CreateRoomsPage {
     this.roomSaveButton = page.locator('#app > div > div.actions > a.btn.blue');
   }
 
-
   async CreateRoom(roomNumber: string, roomFloor: string, roomPrice: string) {
     // Navigate to the room creation view and fill out the form
     await this.createRoomButton.click();

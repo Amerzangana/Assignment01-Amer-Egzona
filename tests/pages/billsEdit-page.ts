@@ -17,8 +17,6 @@ readonly billsDeleteButton: Locator;
 readonly billsAltButton2: Locator;
 readonly billsDeleteButton2: Locator;
 
-
-
 constructor(page: Page) {
 
     this.page = page;
@@ -49,5 +47,4 @@ async DeleteBills() {
     await this.billsAltButton2.click();
     await this.billsDeleteButton2.click();
 }
-
 }
