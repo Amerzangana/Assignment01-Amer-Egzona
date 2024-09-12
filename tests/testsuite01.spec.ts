@@ -15,10 +15,8 @@ import { CreateReservationPage } from './pages/CreateReservation-page';
 import { ReservationViewPage } from './pages/ReservationView-page';
 import { ReservationEdit } from './pages/ReservationEdit-page';
 
-
 test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
-
   await loginPage.goto();
   await loginPage.performLogin(`${process.env.TEST_USERNAME}`,`${process.env.TEST_PASSWORD}`)
   await expect(page.getByRole('heading', { name: 'Tester Hotel Overview' })).toBeVisible();
@@ -33,7 +31,6 @@ test.afterEach(async ({ page }) => {
 
 test.describe('Login', () => {
   test('Login', async ({ page }) => {
-
     await expect(page.getByRole('heading', { name: 'Tester Hotel Overview' })).toBeVisible();
   });
 });
@@ -80,7 +77,7 @@ test('Bill Dashboard Alt', async ({ page }) => {
   await page.waitForTimeout(1000);
 });
 
-test('Room dasbord alt ', async ({ page }) => {
+test('Room Dasboard Alt ', async ({ page }) => {
   const roomsViewPage = new RoomsViewPage(page); 
   const createRoomsPage = new CreateRoomsPage(page);
   const roomEdit = new RoomEdit(page);
@@ -100,11 +97,9 @@ test('Room dasbord alt ', async ({ page }) => {
   await roomEdit.filloutroomInformationManually();
   await roomEdit.veryifrylastroom();
 
-
 });
 
-
-test('Reservation Dashboard alt ', async ({ page }) => {
+test('Reservation Dashboard Alt ', async ({ page }) => {
   const createReservationPage = new CreateReservationPage(page);
   const reservationViewPage = new ReservationViewPage(page);
   const reservationEdit = new ReservationEdit(page);
