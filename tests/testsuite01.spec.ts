@@ -11,6 +11,9 @@ import { BillsView } from './pages/billsView-page';
 import { RoomsViewPage } from './pages/roomsViewPage';
 import { CreateRoomsPage } from './pages/createrooms-page';
 import { RoomEdit } from './pages/Roomedit';
+import { CreateReservationPage } from './pages/CreateReservation-page';
+import { ReservationViewPage } from './pages/ReservationView-page';
+import { ReservationEdit } from './pages/ReservationEdit-page';
 
 
 test.beforeEach(async ({ page }) => {
@@ -96,4 +99,29 @@ test('Room dasbord alt ', async ({ page }) => {
   await roomEdit.DeleteRoom();
   await roomEdit.filloutroomInformationManually();
   await roomEdit.veryifrylastroom();
+
+
 });
+
+
+test('Reservation Dashboard alt ', async ({ page }) => {
+  const createReservationPage = new CreateReservationPage(page);
+  const reservationViewPage = new ReservationViewPage(page);
+  const reservationEdit = new ReservationEdit(page);
+  
+  await reservationViewPage.ReservationView();
+  await reservationViewPage.verifyfirstelement();  
+
+  const reservationStart = faker.date.future();
+  const reservationEnd = faker.date.future();
+  const reservationStartString = reservationStart.toISOString().split('T')[0];
+  const reservationEndString = reservationEnd.toISOString().split('T')[0];
+  
+  await createReservationPage.createReservation(reservationStartString, reservationEndString);
+  await reservationViewPage.verifylastelement(reservationStartString, reservationEndString);
+
+  await reservationEdit.DeliteReservation();
+  await createReservationPage.fillOutReservationInformationManually();
+  await createReservationPage.veryifryManuellyREservation();
+});
+  
