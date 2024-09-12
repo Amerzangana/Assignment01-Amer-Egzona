@@ -9,6 +9,7 @@ export class BillsView {
     readonly firstelement: Locator;
 
 constructor(page: Page) {
+
     this.page = page;
     this.billsViewButton = page.locator('#app > div > div > div:nth-child(3) > a');
     this.lastelement = page.locator('#app > div > div.bills > div:nth-last-child(1)');
@@ -16,7 +17,6 @@ constructor(page: Page) {
 }
 
 async ViewBills() {
-
     await this.billsViewButton.click();
 }
 

@@ -1,8 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 
-
-
 export class CreateRoomsPage {
   //Attributes
   readonly page: Page;
@@ -16,8 +14,8 @@ export class CreateRoomsPage {
   readonly roomFeaturesButton: Locator;
   readonly roomSaveButton: Locator;
 
-  //Constructor
   constructor(page: Page) {
+    //Constructor
     this.page = page;
     this.roomViewButton = page.locator('#app > div > div > div:nth-child(1) > a');
     this.createRoomButton = page.getByRole('link', { name: 'Create Room' });
