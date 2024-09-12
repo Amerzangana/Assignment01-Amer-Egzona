@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from './pages/login-page';
 import { DashboardPage } from './pages/dashboard-page';
 import { faker } from '@faker-js/faker';
-import { BillsPage } from './pages/Createbills-page';
+import { CreateBillsPage } from './pages/Createbills-page';
 import { CreateClientsPage } from './pages/createclients-page';
 import { ClientsView } from './pages/clientsview-page';
 import { ClientsEdit } from './pages/clientsedit-page';
@@ -29,94 +29,143 @@ test.afterEach(async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible();
 });
 
-test.describe('Login', () => {
   test('Login', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Tester Hotel Overview' })).toBeVisible();
   });
-});
 
-test('Clients Dashboard Alt', async ({ page }) => {
+test.describe('Client Dashboard', () => {
+  test('Create Client With Faker', async ({ page }) => {
+    const clientsView = new ClientsView(page);
+    const createclientsPage = new CreateClientsPage(page);
+
+    await clientsView.ClientsView();
+    const fullName = faker.person.fullName();
+    const userEmail = faker.internet.email();
+    const userPhoneNo = faker.phone.number();
+  
+    await createclientsPage.CreateClients(fullName, userEmail, userPhoneNo);
+    await clientsView.verifylastelement(fullName, userEmail, userPhoneNo);
+  });
+  test('Edit Client', async ({ page }) => {
+    const clientsView = new ClientsView(page);
+    const clientsEdit = new ClientsEdit(page);
+
+    await clientsView.ClientsView();
+    await clientsEdit.EditClients();
+    await clientsEdit.veryifryEditclient();
+});
+test('Delete Client', async ({ page }) => {
   const clientsView = new ClientsView(page);
-  const createclientsPage = new CreateClientsPage(page);
   const clientsEdit = new ClientsEdit(page);
 
-  await clientsView.ClientsView();
-  await clientsView.verifyfirstelement();
-
-  const fullName = faker.person.fullName();
-  const userEmail = faker.internet.email();
-  const userPhoneNo = faker.phone.number();
-
-  await createclientsPage.CreateClients(fullName, userEmail, userPhoneNo);
-  await clientsView.verifylastelement(fullName, userEmail, userPhoneNo);
-  await clientsEdit.EditClients();
-  await clientsEdit.DeliteClients();
-  await createclientsPage.filloutClientInformationManually();
-  await createclientsPage.veryifrylastclient();
+    await clientsView.ClientsView();
+    await clientsEdit.DeliteClients();
+    await clientsEdit.verifyDeleteClient();
+});
 });
 
-test('Bill Dashboard Alt', async ({ page }) => {
-  const billsPage = new BillsPage(page);
-  const billsEdit = new BillsEdit(page);
-  const billView = new BillsView(page);
+test.describe('Bills Dashboard', () => {
+  test('Create Bill', async ({ page }) => {
+    const createBillsPage = new CreateBillsPage(page);
+    const billView = new BillsView(page);
 
-  await billView.ViewBills();
-  await billView.verifyfirstelement();
+    await billView.ViewBills();
+    await billView.verifyfirstelement();
 
-  const price = faker.commerce.price({ min: 999, max: 5000, dec: 0 });
-  await billsPage.CreateBills(price);
-  await billView.verifylastelement(price);
-  await page.waitForTimeout(1000);
+    const price = faker.commerce.price({ min: 999, max: 5000, dec: 0 });
+    await createBillsPage.CreateBills(price);
+    await billView.verifylastelement(price);
+    await page.waitForTimeout(500);
+    await createBillsPage.CreateBills(price);
+    await billView.verifylastelement(price);
+  });
 
-  await billsPage.CreateBills(price);
-  await billView.verifylastelement(price);
-  await billsEdit.EditBills();
-  await billsEdit.DeleteBills();
-  await billsPage.CreateBillsNotPaid(price);
-  await billsPage.verifylastelementNotpaid(price);
-  await page.waitForTimeout(1000);
+  test('Edit Bill', async ({ page }) => {
+    const billsEdit = new BillsEdit(page);
+    const billView = new BillsView(page);
+
+    await billView.ViewBills();
+    await billsEdit.EditBills();
+    await billsEdit.verifyEditBills();
+  });
+
+  test('Delete Bill', async ({ page }) => {
+    const billsEdit = new BillsEdit(page);
+    const billView = new BillsView(page);
+
+    await billView.ViewBills();
+    await billsEdit.DeleteBills();
+    await billsEdit.verifyDeleteBills();
+  });
 });
 
-test('Room Dasboard Alt ', async ({ page }) => {
-  const roomsViewPage = new RoomsViewPage(page); 
-  const createRoomsPage = new CreateRoomsPage(page);
-  const roomEdit = new RoomEdit(page);
+test.describe('Room Dashboard', () => {
+  test('Create Room', async ({ page }) => {
+    const roomsViewPage = new RoomsViewPage(page); 
+    const createRoomsPage = new CreateRoomsPage(page);
 
-  await roomsViewPage.RoomsView(); 
-  await expect(page.getByRole('heading', { name: 'Rooms' })).toBeVisible();
+    await roomsViewPage.RoomsView(); 
+    await roomsViewPage.VerifyrommsDashboard(); 
 
-  const roomNumber = faker.number.float({ min: 20, max: 30 }).toFixed(0);
-  const roomFloor = faker.number.int({ min: 1, max: 10 }).toString();
-  const roomPrice = faker.commerce.price({ min: 999, max: 5000, dec: 0 });
-
-  await createRoomsPage.CreateRoom(roomNumber, roomFloor, roomPrice);
-  await roomsViewPage.verifylastelement(roomNumber, roomFloor, roomPrice);
-
-  await roomEdit.EditRoom();
-  await roomEdit.DeleteRoom();
-  await roomEdit.filloutroomInformationManually();
-  await roomEdit.veryifrylastroom();
-
-});
-
-test('Reservation Dashboard Alt ', async ({ page }) => {
-  const createReservationPage = new CreateReservationPage(page);
-  const reservationViewPage = new ReservationViewPage(page);
-  const reservationEdit = new ReservationEdit(page);
+    const roomNumber = faker.number.float({ min: 20, max: 30 }).toFixed(0);
+    const roomFloor = faker.number.int({ min: 1, max: 10 }).toString();
+    const roomPrice = faker.commerce.price({ min: 999, max: 5000, dec: 0 });
   
-  await reservationViewPage.ReservationView();
-  await reservationViewPage.verifyfirstelement();  
+    await createRoomsPage.CreateRoom(roomNumber, roomFloor, roomPrice);
+    await roomsViewPage.verifylastelement(roomNumber, roomFloor, roomPrice);
+  });
 
-  const reservationStart = faker.date.future();
-  const reservationEnd = faker.date.future();
-  const reservationStartString = reservationStart.toISOString().split('T')[0];
-  const reservationEndString = reservationEnd.toISOString().split('T')[0];
-  
-  await createReservationPage.createReservation(reservationStartString, reservationEndString);
-  await reservationViewPage.verifylastelement(reservationStartString, reservationEndString);
+  test('Edit Room', async ({ page }) => {
+    const roomsViewPage = new RoomsViewPage(page); 
+    const roomEdit = new RoomEdit(page);
 
-  await reservationEdit.DeliteReservation();
-  await createReservationPage.fillOutReservationInformationManually();
-  await createReservationPage.veryifryManuellyREservation();
+    await roomsViewPage.RoomsView(); 
+    await roomEdit.EditRoom();
+    await roomEdit.veryifryEditroom();
+  });
+
+  test('Delete Room', async ({ page }) => {
+    const roomsViewPage = new RoomsViewPage(page); 
+    const roomEdit = new RoomEdit(page);
+
+    await roomsViewPage.RoomsView(); 
+    await roomEdit.DeleteRoom();
+    await roomEdit.verifyDeleteroom();
+  });
 });
+
+test.describe('Reservation Dashboard', () => {
+  test('Create Reservation', async ({ page }) => {
+    const createReservationPage = new CreateReservationPage(page);
+    const reservationViewPage = new ReservationViewPage(page);
+
+    await reservationViewPage.ReservationView();
+    await reservationViewPage.verifyReservationHeading(); 
+    
+    const reservationStart = faker.date.future();
+    const reservationEnd = faker.date.future();
+    const reservationStartString = reservationStart.toISOString().split('T')[0];
+    const reservationEndString = reservationEnd.toISOString().split('T')[0];
   
+    await createReservationPage.createReservation(reservationStartString, reservationEndString);
+    await reservationViewPage.verifylastelement(reservationStartString, reservationEndString);
+  });
+
+  test('Edit Reservation', async ({ page }) => {
+    const reservationViewPage = new ReservationViewPage(page);
+    const reservationEdit = new ReservationEdit(page);
+
+    await reservationViewPage.ReservationView();
+    await reservationEdit.EditReservation();
+    await reservationViewPage.verifyfirstelement();
+  });
+
+  test('Delete Reservation', async ({ page }) => {
+    const reservationViewPage = new ReservationViewPage(page);
+    const reservationEdit = new ReservationEdit(page);
+
+    await reservationViewPage.ReservationView();
+    await reservationEdit.DeleteReservation();
+    await reservationEdit.VerifyDeleteReservation();
+  });
+});

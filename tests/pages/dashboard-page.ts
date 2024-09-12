@@ -6,11 +6,12 @@ export class DashboardPage {
   readonly logoutButton: Locator; 
 
   constructor(page: Page) {
+    //Constructor
     this.page = page;
     this.logoutButton = page.getByRole('button', { name: 'Logout' });
   }
 
-   async performLogout() {
+  async performLogout() {
     await this.logoutButton.click();
   }
 }
